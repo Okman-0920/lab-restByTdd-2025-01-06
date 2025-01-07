@@ -29,7 +29,7 @@ public class ApiV1MemberController {
         System.out.println(member.getCreateDate());
         return new RsData<>(
                 "201-1",
-                "%s님 환영합니다.".formatted(member.getName()),
+                "%s님 환영합니다. 회원가입이 완료되었습니다.".formatted(member.getName()),
                 new MemberDto(member));
 
     }
