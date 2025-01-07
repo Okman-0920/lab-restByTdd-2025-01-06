@@ -77,7 +77,7 @@ class ApiV1MemberControllerTest {
                                 .content("""
                                     {
                                         "username": "user1",
-                                        "password": "1234",
+                                        "password": "1234"
                                     }
                                     """.stripIndent())
                                 .contentType(
@@ -87,11 +87,11 @@ class ApiV1MemberControllerTest {
                 .andDo(print());
 
 
-        resultActions // 테스트의 결과는 다음과 같기를 기대한다.
+        resultActions 
                 .andExpect(handler().handlerType(ApiV1MemberController.class))
                 .andExpect(handler().methodName("login"))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.resultCode").value("201-1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").value("200-1"))
                 .andExpect(jsonPath("$.msg").value("유저1님 환영합니다."))
                 .andExpect(jsonPath("$.data").exists())
                 .andExpect(jsonPath("$.data.item").exists())
