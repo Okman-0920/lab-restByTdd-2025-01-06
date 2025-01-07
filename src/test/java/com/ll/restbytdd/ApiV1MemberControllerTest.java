@@ -59,18 +59,19 @@ class ApiV1MemberControllerTest {
         resultActions // 테스트의 결과는 다음과 같기를 기대한다.
                 // 요청을 처리한 컨트롤러가 AVMContoller 이어야 한다.
                 .andExpect(handler().handlerType(ApiV1MemberController.class))
-
                 // "join" 메서드가 실행되어야 한다.
                 .andExpect(handler().methodName("join"))
-
                 // HTTP 응답 상태 코드가 201(CREATED)이어야 한다.
                 .andExpect(status().isCreated())
-
                 // json이 처리되면 resultcode에는 201-1이어야 한다.
                 .andExpect(jsonPath("$.resultCode").value("201-1"))
-
                 // mag는 존재해야하고, 아래와 같이 출력되어야 한다.
-                .andExpect(jsonPath("$.msg").value("무명님 환영합니다."));
+                .andExpect(jsonPath("$.msg").value("무명님 환영합니다."))
+                .andExpect(jsonPath("$.data").exists())
+                .andExpect(jsonPath("$.data.id").isNumber())
+                .andExpect(jsonPath("$.data.createDate").isString())
+                .andExpect(jsonPath("$.data.modifyDate").isString())
+                .andExpect(jsonPath("$.data.nickname").value("무명"));
 
         Member member = memberService.findByUsername("usernew").get();
         assertThat(member.getNickname()).isEqualTo("무명");
