@@ -6,6 +6,8 @@ import com.ll.restByTdd.domain.member.member.service.MemberService;
 import com.ll.restByTdd.global.exceptions.ServiceException;
 import com.ll.restByTdd.global.rq.Rq;
 import com.ll.restByTdd.global.rsData.RsData;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,9 +19,9 @@ public class ApiV1MemberController {
     private final Rq rq;
 
     record MemberJoinReqBody (
-            String username,
-            String password,
-            String nickname
+            @NotBlank String username,
+            @NotBlank String password,
+            @NotBlank String nickname
     ) {
     }
 
@@ -37,8 +39,8 @@ public class ApiV1MemberController {
     }
 
     record MemberLoginReqBody (
-            String username,
-            String password
+            @NotBlank String username,
+            @NotBlank String password
     ) {
     }
 
@@ -50,7 +52,7 @@ public class ApiV1MemberController {
 
     @PostMapping("/login")
     public RsData<MemberLoginResBody> login(
-            @RequestBody MemberLoginReqBody reqBody
+            @RequestBody @Valid MemberLoginReqBody reqBody
     ) {
         Member member = memberService
                 .findByUsername(reqBody.username)
@@ -58,7 +60,7 @@ public class ApiV1MemberController {
                         () -> new ServiceException("401-1", "존재하지 않는 사용자입니다."));
 
         if (!member.matchPassword(reqBody.password))
-            throw new ServiceException("401-2", "비밀번호가 일치하지 않습니다");
+            throw new ServiceException("401-2", "비밀번호가 일치하지 않습니다.");
 
         return new RsData<>(
                 "200-1",
