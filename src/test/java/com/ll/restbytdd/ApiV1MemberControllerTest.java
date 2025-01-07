@@ -28,7 +28,7 @@ class ApiV1MemberControllerTest {
         // 회원가입 요청
         ResultActions resultActions = mvc
                 .perform(
-                        post("/api/v1/member/1")
+                        post("/api/v1/members/join")
                 )
                 .andDo(print()); // 결과를 콘솔에 출력
 
