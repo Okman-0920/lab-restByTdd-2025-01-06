@@ -6,7 +6,10 @@ import com.ll.restByTdd.domain.member.member.service.MemberService;
 import com.ll.restByTdd.global.exceptions.ServiceException;
 import com.ll.restByTdd.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/members")
