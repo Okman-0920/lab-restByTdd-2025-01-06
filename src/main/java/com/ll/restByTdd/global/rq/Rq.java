@@ -24,7 +24,7 @@ public class Rq {
     public Member checkAuthentication() {
         String credentials = request.getHeader("Authorization");
 
-        String apiKey = credentials == null?
+        String apiKey = credentials == null ? // 3항 연산자 조건 ? 참일때 값 : 거짓일때 값
                 ""
                 :
                 credentials.substring("Bearer ".length());
