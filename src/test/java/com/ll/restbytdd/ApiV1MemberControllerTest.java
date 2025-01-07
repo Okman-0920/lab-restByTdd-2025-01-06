@@ -1,6 +1,8 @@
 package com.ll.restbytdd;
 
 import com.ll.restbytdd.domain.member.member.controller.ApiV1MemberController;
+import com.ll.restbytdd.domain.member.member.entity.Member;
+import com.ll.restbytdd.domain.member.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -23,6 +26,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 class ApiV1MemberControllerTest {
+    @Autowired // 테스트는 의존성 주입을 Autowired로 해야 함
+    private MemberService memberService;
+
     @Autowired
     private MockMvc mvc;
 
@@ -65,5 +71,8 @@ class ApiV1MemberControllerTest {
 
                 // mag는 존재해야하고, 아래와 같이 출력되어야 한다.
                 .andExpect(jsonPath("$.msg").value("무명님 환영합니다."));
+
+        Member member = memberService.findByUsername("usernew").get();
+        assertThat(member.getNickname()).isEqualTo("무명");
     }
 }
