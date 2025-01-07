@@ -64,6 +64,6 @@ class ApiV1MemberControllerTest {
                 .andExpect(jsonPath("$.resultCode").value("201-1"))
 
                 // mag는 존재해야하고, 아래와 같이 출력되어야 한다.
-                .andExpect(jsonPath("$.msg").value("환영합니다."));
+                .andExpect(jsonPath("$.msg").value("무명님 환영합니다."));
     }
 }
