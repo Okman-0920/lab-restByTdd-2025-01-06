@@ -67,16 +67,16 @@ public class BaseInitData {
         Member memberUser3 = memberService.findByUsername("user3").get();
         Member memberUser4 = memberService.findByUsername("user4").get();
 
-        Post post1 = postService.write(memberUser1, "축구 하실 분?", "14시 까지 22명을 모아야 합니다.");
-        post1.addComment(memberUser2, "저요!");
-        post1.addComment(memberUser3, "저도 할래요.");
+        Post post1 = postService.write(memberUser1, "글1", "글1, 내용");
+        post1.addComment(memberUser2, "글1, 유저2(userId - 4), 댓글1");
+        post1.addComment(memberUser3, "글1, 유저3(userId - 5), 댓글2");
 
-        Post post2 = postService.write(memberUser1, "배구 하실 분?", "15시 까지 12명을 모아야 합니다.");
-        post1.addComment(memberUser4, "저요!, 저 배구 잘합니다.");
+        Post post2 = postService.write(memberUser1, "글2", "글2, 내용");
+        post1.addComment(memberUser4, "글2, 유저4(userId - 6), 댓글1");
 
-        Post post3 = postService.write(memberUser2, "농구 하실 분?", "16시 까지 10명을 모아야 합니다.");
-        Post post4 = postService.write(memberUser3, "발야구 하실 분?", "17시 까지 14명을 모아야 합니다.");
-        Post post5 = postService.write(memberUser4, "피구 하실 분?", "18시 까지 18명을 모아야 합니다.");
+        Post post3 = postService.write(memberUser2, "글3", "글3, 내용");
+        Post post4 = postService.write(memberUser3, "글4", "글4, 내용");
+        Post post5 = postService.write(memberUser4, "글5", "글5, 내용");
 
 
     }
