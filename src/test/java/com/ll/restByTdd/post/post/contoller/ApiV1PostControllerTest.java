@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @Transactional
-class ApiV1ApiV1PostControllerTest {
+class ApiV1PostControllerTest {
     @Autowired // 테스트는 의존성 주입을 Autowired 를 사용하여 강제로 해야 함
     private MemberService memberService;
 
@@ -78,7 +78,7 @@ class ApiV1ApiV1PostControllerTest {
                 .andExpect(handler().methodName("item"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.resultCode").value("404-1"))
-                .andExpect(jsonPath("$.msg").value("해당 데이터가 존재하지 않습니다"));
+                .andExpect(jsonPath("$.msg").value("해당 데이터가 존재하지 않습니다."));
     }
 
     @Test
@@ -239,5 +239,28 @@ class ApiV1ApiV1PostControllerTest {
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.resultCode").value("403-1"))
                 .andExpect(jsonPath("$.msg").value("작성자만 글을 수정할 수 있습니다."));
+    }
+
+    @Test
+    @DisplayName("글 삭제")
+    void t8() throws Exception {
+        Member actor = memberService.findByUsername("user1").get();
+        Post post = postService.findById(1).get();
+
+        ResultActions resultActions = mvc
+                .perform(
+                        delete("/api/v1/posts/1")
+                                .header("Authorization", "Bearer " + actor.getApiKey())
+                )
+                .andDo(print());
+
+        resultActions
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("deleteItem"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").value("200-1"))
+                .andExpect(jsonPath("$.msg").value("%d번 글이 삭제되었습니다.".formatted(post.getId())));
+
+        assertThat(postService.findById(1)).isEmpty();
     }
 }
