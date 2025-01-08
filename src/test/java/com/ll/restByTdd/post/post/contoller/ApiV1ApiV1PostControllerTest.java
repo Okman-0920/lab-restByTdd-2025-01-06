@@ -187,4 +187,29 @@ class ApiV1ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.data.title").value(post.getTitle()))
                 .andExpect(jsonPath("$.data.content").value(post.getContent()));
     }
+
+    @Test
+    @DisplayName("글 수정, with no actor")
+    void t6() throws Exception {
+        ResultActions resultActions = mvc
+                .perform(
+                        put("/api/v1/posts/1")
+                                .content("""
+                                        {
+                                            "title" : "글1의 수정 제목",
+                                            "content": "글1의 수정 내용"
+                                        }
+                                        """)
+                                .contentType(
+                                        new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
+                )
+                .andDo(print());
+
+        resultActions
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("modifyItem"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.resultCode").value("401-1"))
+                .andExpect(jsonPath("$.msg").value("apiKey를 입력해주세요."));
+    }
 }
