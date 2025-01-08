@@ -27,7 +27,7 @@ public class ApiV1MemberController {
 
     @PostMapping("/join")
     public RsData<MemberDto> join(
-            @RequestBody MemberJoinReqBody reqBody
+            @RequestBody @Valid MemberJoinReqBody reqBody
     ) {
         Member member = memberService.join(reqBody.username, reqBody.password, reqBody.nickname);
         System.out.println(member.getCreateDate());
