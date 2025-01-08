@@ -286,4 +286,21 @@ class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.resultCode").value("404-1"))
                 .andExpect(jsonPath("$.msg").value("해당 데이터가 존재하지 않습니다."));
     }
+
+    @Test
+    @DisplayName("글 삭제, no actor")
+    void t10() throws Exception {
+        ResultActions resultActions = mvc
+                .perform(
+                        delete("/api/v1/posts/1")
+                )
+                .andDo(print());
+
+        resultActions
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("deleteItem"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.resultCode").value("401-1"))
+                .andExpect(jsonPath("$.msg").value("apiKey를 입력해주세요."));
+    }
 }
