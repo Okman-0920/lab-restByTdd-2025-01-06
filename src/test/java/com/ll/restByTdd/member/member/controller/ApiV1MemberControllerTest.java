@@ -1,4 +1,4 @@
-package com.ll.restByTdd;
+package com.ll.restByTdd.member.member.controller;
 
 import com.ll.restByTdd.domain.member.member.controller.ApiV1MemberController;
 import com.ll.restByTdd.domain.member.member.entity.Member;
