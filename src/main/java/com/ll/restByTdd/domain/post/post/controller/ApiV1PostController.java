@@ -37,6 +37,7 @@ public class ApiV1PostController {
     ) {
         Member actor = rq.checkAuthentication();
 
+
         Post post = postService.write(actor, reqBody.title, reqBody.content);
 
         return new RsData<>(
