@@ -245,6 +245,7 @@ class ApiV1PostControllerTest {
     @DisplayName("글 삭제")
     void t8() throws Exception {
         Member actor = memberService.findByUsername("user1").get();
+
         Post post = postService.findById(1).get();
 
         ResultActions resultActions = mvc
@@ -262,5 +263,27 @@ class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.msg").value("%d번 글이 삭제되었습니다.".formatted(post.getId())));
 
         assertThat(postService.findById(1)).isEmpty();
+    }
+
+    @Test
+    @DisplayName("글 삭제, with not existing post id")
+    void t9() throws Exception {
+        Member actor = memberService.findByUsername("user1").get();
+
+        ResultActions resultActions = mvc
+                .perform(
+                        delete("/api/v1/posts/10")
+                                .header("Authorization", "Bearer " + actor.getApiKey())
+                )
+                .andDo(print());
+
+        assertThat(postService.findById(10)).isEmpty();
+
+        resultActions
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("deleteItem"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.resultCode").value("404-1"))
+                .andExpect(jsonPath("$.msg").value("해당 데이터가 존재하지 않습니다."));
     }
 }
