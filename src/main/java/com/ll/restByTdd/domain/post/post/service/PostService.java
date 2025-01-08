@@ -52,4 +52,8 @@ public class PostService {
     public Optional<Post> findLaTest() { // 최신꺼 하나 내놔
         return postRepository.findFirstByOrderByIdDesc();
     }
+
+    public void flush() {
+        postRepository.flush();
+    }
 }
