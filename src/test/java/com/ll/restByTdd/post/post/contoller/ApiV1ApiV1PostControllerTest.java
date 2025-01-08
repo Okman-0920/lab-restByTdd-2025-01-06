@@ -1,5 +1,7 @@
 package com.ll.restByTdd.post.post.contoller;
 
+import com.ll.restByTdd.domain.member.member.entity.Member;
+import com.ll.restByTdd.domain.member.member.service.MemberService;
 import com.ll.restByTdd.domain.post.post.controller.ApiV1PostController;
 import com.ll.restByTdd.domain.post.post.entity.Post;
 import com.ll.restByTdd.domain.post.post.service.PostService;
@@ -9,12 +11,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -24,6 +31,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 class ApiV1ApiV1PostControllerTest {
     @Autowired // 테스트는 의존성 주입을 Autowired 를 사용하여 강제로 해야 함
+    private MemberService memberService;
+
+    @Autowired
     private PostService postService;
 
     @Autowired
@@ -70,4 +80,49 @@ class ApiV1ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.resultCode").value("404-1"))
                 .andExpect(jsonPath("$.msg").value("해당 데이터가 존재하지 않습니다"));
     }
+
+    @Test
+    @DisplayName("글 작성")
+    void t3() throws Exception {
+        Member actor = memberService.findByUsername("user1").get();
+
+        ResultActions resultActions = mvc
+                .perform(
+                        post("/api/v1/posts/write")
+                                // header: HTTP 요청 헤더(header)에 특정 값을 추가
+                                // "Authorization": 헤더의 이름으로, 클라이언트가 서버에 인증 정보를 전달하기 위해 사용
+                                // "Bearer " + actor.getApiKey(): 헤더 값으로 "Bearer "라는 인증 유형과 함께 API 키를 추가
+                                // "Bearer ": 인증 방식 중 하나로, 토큰을 사용하는 방식
+                                .header("Authorization", "Bearer " + actor.getApiKey())
+                                .content("""
+                                        {
+                                            "title": "글1",
+                                            "content": "글1의 내용"
+                                        }
+                                        """)
+                                .contentType(
+                                        new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
+                )
+                .andDo(print());
+
+        Post post = postService.findLaTest().get();
+
+        assertThat(post.getAuthor()).isEqualTo(actor);
+
+        resultActions
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("writeItem"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.resultCode").value("201-1"))
+                .andExpect(jsonPath("$.msg").value("%d번 글이 작성되었습니다".formatted(post.getId())))
+                .andExpect(jsonPath("$.data.id").value(post.getId()))
+                .andExpect(jsonPath("$.data.createDate").value(Matchers.startsWith(post.getCreateDate().toString().substring(0,25))))
+                .andExpect(jsonPath("$.data.modifyDate").value(Matchers.startsWith(post.getModifyDate().toString().substring(0,25))))
+                .andExpect(jsonPath("$.data.authorId").value(post.getAuthor().getId()))
+                .andExpect(jsonPath("$.data.authorName").value(post.getAuthor().getName()))
+                .andExpect(jsonPath("$.data.title").value(post.getTitle()))
+                .andExpect(jsonPath("$.data.content").value(post.getContent()));
+
+    }
+
 }

@@ -48,4 +48,8 @@ public class PostService {
         post.setTitle(title);
         post.setContent(content);
     }
+
+    public Optional<Post> findLaTest() { // 최신꺼 하나 내놔
+        return postRepository.findFirstByOrderByIdDesc();
+    }
 }

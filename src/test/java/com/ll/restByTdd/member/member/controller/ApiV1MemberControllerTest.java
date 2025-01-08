@@ -36,17 +36,22 @@ class ApiV1MemberControllerTest {
     @Test
     @DisplayName("회원가입")
     void t1() throws Exception {
-        ResultActions resultActions = mvc
+        ResultActions resultActions = mvc // mvc: MockMvc 객체를 통해 HTTP 요청을 수행
+                // HTTP 요청을 실행하는 메서드
                 .perform(
+                        // POST 요청을 "/api~join" URL로 보낸다
                         post("/api/v1/members/join")
-                                .content("""
+                                // content: HTTP 요청 본문에 Json 데이터를 추가하고, 회원 가입 시 필요한 정보를 json형태로 전달
+                                .content(""" 
                                     {
                                         "username": "usernew",
                                         "password": "1234",
                                         "nickname": "무명"
-                                    }
-                                    """.stripIndent())
+                                    }                                   
+                                    """.stripIndent()) // 문자열의 들여쓰기를 제거함
+                                // HTTP 요청 본문의 데이터 타입을 설정
                                 .contentType(
+                                        // JSON 데이터를 전달하고, UTF-8 인코딩을 사용하는 것으로 지정
                                         new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8)
                                 )
                 )
