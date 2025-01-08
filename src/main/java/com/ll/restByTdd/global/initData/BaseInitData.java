@@ -67,16 +67,49 @@ public class BaseInitData {
         Member memberUser3 = memberService.findByUsername("user3").get();
         Member memberUser4 = memberService.findByUsername("user4").get();
 
-        Post post1 = postService.write(memberUser1, "글1", "글1, 내용");
+        Post post1 = postService.write(
+                memberUser1,
+                "글1",
+                "글1, 내용",
+                true
+        );
         post1.addComment(memberUser2, "글1, 유저2(userId - 4), 댓글1");
         post1.addComment(memberUser3, "글1, 유저3(userId - 5), 댓글2");
 
-        Post post2 = postService.write(memberUser1, "글2", "글2, 내용");
+        Post post2 = postService.write(
+                memberUser1,
+                "글2",
+                "글2, 내용",
+                true
+        );
         post1.addComment(memberUser4, "글2, 유저4(userId - 6), 댓글1");
 
-        Post post3 = postService.write(memberUser2, "글3", "글3, 내용");
-        Post post4 = postService.write(memberUser3, "글4", "글4, 내용");
-        Post post5 = postService.write(memberUser4, "글5", "글5, 내용");
+        Post post3 = postService.write(
+                memberUser2,
+                "글3",
+                "글3, 내용",
+                true
+        );
+
+        Post post4 = postService.write(
+                memberUser3,
+                "글4",
+                "글4, 내용",
+                true);
+
+        Post post5 = postService.write(
+                memberUser4,
+                "글5",
+                "글5, 내용",
+                true
+        );
+
+        Post post6 = postService.write(
+                memberUser4,
+                "글6",
+                "글6, 내용",
+                false
+        );
 
 
     }

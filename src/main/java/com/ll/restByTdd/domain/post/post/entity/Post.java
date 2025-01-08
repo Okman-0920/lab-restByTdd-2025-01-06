@@ -47,6 +47,8 @@ public class Post extends BaseTime {
         return comments.reversed();
     }
 
+    private boolean published;
+
     public Optional<PostComment> getCommentById(long commentId) {
         return comments.stream()
                 .filter(comment -> comment.getId() == commentId)
@@ -58,7 +60,7 @@ public class Post extends BaseTime {
     }
 
     public void checkActorCanDelete(Member actor) {
-        if (actor == null) throw new ServiceException("403-1", "로그인이 후 이용해주세요.");
+        if (actor == null) throw new ServiceException("403-1", "로그인 후 이용해주세요.");
 
         if (actor.isAdmin()) return;
 
@@ -68,7 +70,7 @@ public class Post extends BaseTime {
     }
 
     public void checkActorCanModify(Member actor) {
-        if (actor == null) throw new ServiceException("403-1", "로그인이 후 이용해주세요.");
+        if (actor == null) throw new ServiceException("403-1", "로그인 후 이용해주세요.");
 
         if (actor.equals(author)) return;
 
