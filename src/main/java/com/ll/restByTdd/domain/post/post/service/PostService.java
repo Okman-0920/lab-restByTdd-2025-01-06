@@ -4,6 +4,9 @@ import com.ll.restByTdd.domain.member.member.entity.Member;
 import com.ll.restByTdd.domain.post.post.entity.Post;
 import com.ll.restByTdd.domain.post.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -59,5 +62,14 @@ public class PostService {
 
     public void flush() {
         postRepository.flush();
+    }
+
+    public List<Post> findByListedPaged(boolean listed, int page, int pageSize) {
+        // JPA에서 제공하는 라이브러리
+        PageRequest pageRequest = PageRequest.of(page - 1, pageSize, Sort.by("published"));
+
+        Page<Post> postPage = postRepository.findByListed(listed, pageRequest);
+
+        return postPage.getContent();
     }
 }
