@@ -64,12 +64,10 @@ public class PostService {
         postRepository.flush();
     }
 
-    public List<Post> findByListedPaged(boolean listed, int page, int pageSize) {
+    public Page<Post> findByListedPaged(boolean listed, int page, int pageSize) {
         // JPA에서 제공하는 라이브러리
-        PageRequest pageRequest = PageRequest.of(page - 1, pageSize, Sort.by("published"));
+        PageRequest pageRequest = PageRequest.of(page - 1, pageSize, Sort.by(Sort.Order.desc("id")));
 
-        Page<Post> postPage = postRepository.findByListed(listed, pageRequest);
-
-        return postPage.getContent();
+        return postRepository.findByListed(listed, pageRequest);
     }
 }

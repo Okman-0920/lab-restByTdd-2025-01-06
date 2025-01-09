@@ -404,7 +404,7 @@ class ApiV1PostControllerTest {
     void t15() throws Exception {
         ResultActions resultActions = mvc
                 .perform(
-                        get("/api/v1/posts")
+                        get("/api/v1/posts?page=1&pageSize=3")
                 )
                 .andDo(print());
 
@@ -413,7 +413,9 @@ class ApiV1PostControllerTest {
                 .andExpect(handler().methodName("items"))
                 .andExpect(status().isOk());
 
-        List<Post> posts = postService.findAllByOrderByIdDesc();
+        List<Post> posts = postService
+                .findByListedPaged(true,  1, 3)
+                .getContent();
 
         for (int i = 0; i < posts.size(); i++) {
             Post post = posts.get(i);

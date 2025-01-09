@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +24,24 @@ public class ApiV1PostController {
     private final PostService postService;
     private final Rq rq;
 
+    // 다건 조회
+    @GetMapping
+    public List<PostDto> items(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int pageSize
+    ) {
+        Page<Post> postPage = postService.findByListedPaged(true, page, pageSize);
+
+        return postPage
+                .getContent()
+                .stream()
+                .map(PostDto::new)
+                .toList();
+    }
+
+    // 단건 조회
     @GetMapping("/{id}")
-    public PostDto item(@PathVariable long id) {
+    public PostWithContentDto item(@PathVariable long id) {
         Post post = postService.findById(id).get();
 
         if (!post.isPublished()) {
@@ -33,19 +50,7 @@ public class ApiV1PostController {
             post.checkActorCanRead(actor);
         }
 
-        return new PostDto(post);
-    }
-
-    @GetMapping
-    public List<PostDto> items(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int pageSize
-    ) {
-        List<Post> posts = postService.findByListedPaged(true, page, pageSize);
-
-        return posts.stream()
-                .map(post -> new PostDto(post))
-                .toList();
+        return new PostWithContentDto(post);
     }
 
     record postWriteReqBody (
