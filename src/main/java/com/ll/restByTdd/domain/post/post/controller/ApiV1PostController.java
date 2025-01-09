@@ -37,6 +37,8 @@ public class ApiV1PostController {
     record postWriteReqBody (
             @NotBlank @Length(min = 2) String title,
             @NotBlank @Length(min = 2) String content,
+            boolean published,
+            boolean listed
     ) {
     }
 
@@ -47,7 +49,12 @@ public class ApiV1PostController {
         Member actor = rq.checkAuthentication();
 
 
-        Post post = postService.write(actor, reqBody.title, reqBody.content, true, true);
+        Post post = postService.write(
+                actor,
+                reqBody.title,
+                reqBody.content,
+                reqBody.published,
+                reqBody.listed);
 
         return new RsData<>(
                 "201-1",
@@ -57,7 +64,9 @@ public class ApiV1PostController {
 
     record PostModifyReqBody (
             @NotBlank String title,
-            @NotBlank String content
+            @NotBlank String content,
+            boolean published,
+            boolean listed
     ) {
     }
 
@@ -73,7 +82,7 @@ public class ApiV1PostController {
 
         post.checkActorCanModify(actor);
 
-        postService.modify(post, reqBody.title, reqBody.content());
+        postService.modify(post, reqBody.title, reqBody.content, reqBody.published, reqBody.listed);
 
         postService.flush();
 
