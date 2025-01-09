@@ -3,6 +3,7 @@ package com.ll.restByTdd.domain.post.post.repository;
 import com.ll.restByTdd.domain.post.post.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -14,4 +15,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<Post> findFirstByOrderByIdDesc();
 
     Page<Post> findByListed(boolean listed, PageRequest pageRequest);
+
+    Page<Post> findByListedAndContentLike(boolean listed, String content, Pageable pageable);
+
+    Page<Post> findByListedAndTitleLike(boolean listed, String searchKeyword, PageRequest pageRequest);
 }

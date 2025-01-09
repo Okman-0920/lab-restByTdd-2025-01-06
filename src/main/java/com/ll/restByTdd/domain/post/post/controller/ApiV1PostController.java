@@ -25,11 +25,13 @@ public class ApiV1PostController {
     // 다건 조회
     @GetMapping
     public PageDto<PostDto> items(
+            @RequestParam(defaultValue = "title") String searchKeywordType,
+            @RequestParam(defaultValue = "") String searchKeyword,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int pageSize
     ) {
        return new PageDto<>(
-               postService.findByListedPaged(true, page, pageSize) // Page<Post>
+               postService.findByListedPaged(true, searchKeywordType, searchKeyword, page, pageSize) // Page<Post>
                        .map(PostDto::new) // 외워야함: Page<PostDto>
        );
     }

@@ -69,7 +69,7 @@ public class BaseInitData {
 
         Post post1 = postService.write(
                 memberUser1,
-                "글1",
+                "글1 생성",
                 "글1, 내용",
                 true,
                 true
@@ -79,7 +79,7 @@ public class BaseInitData {
 
         Post post2 = postService.write(
                 memberUser1,
-                "글2",
+                "글2 생성",
                 "글2, 내용",
                 true,
                 true
@@ -88,7 +88,7 @@ public class BaseInitData {
 
         Post post3 = postService.write(
                 memberUser2,
-                "글3",
+                "글3 생성",
                 "글3, 내용",
                 true,
                 true
@@ -96,7 +96,7 @@ public class BaseInitData {
 
         Post post4 = postService.write(
                 memberUser3,
-                "글4",
+                "글4 생성",
                 "글4, 내용",
                 true,
                 true
