@@ -1,4 +1,4 @@
-package com.ll.restByTdd.post.post.contoller;
+package com.ll.restByTdd.domain.post.post.contoller;
 
 import com.ll.restByTdd.domain.member.member.entity.Member;
 import com.ll.restByTdd.domain.member.member.service.MemberService;
