@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -60,7 +61,9 @@ class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.authorId").value(post.getAuthor().getId()))
                 .andExpect(jsonPath("$.authorName").value(post.getAuthor().getName()))
                 .andExpect(jsonPath("$.title").value(post.getTitle()))
-                .andExpect(jsonPath("$.content").value(post.getContent()));
+                .andExpect(jsonPath("$.content").value(post.getContent()))
+                .andExpect(jsonPath("$.published").value(post.isPublished()))
+                .andExpect(jsonPath("$.listed").value(post.isListed()));
     }
 
     @Test
@@ -96,7 +99,9 @@ class ApiV1PostControllerTest {
                                 .content("""
                                         {
                                             "title": "글1",
-                                            "content": "글1의 내용"
+                                            "content": "글1의 내용",
+                                            "published": true,
+                                            "listed": false
                                         }
                                         """)
                                 .contentType(
@@ -120,7 +125,10 @@ class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.data.authorId").value(post.getAuthor().getId()))
                 .andExpect(jsonPath("$.data.authorName").value(post.getAuthor().getName()))
                 .andExpect(jsonPath("$.data.title").value(post.getTitle()))
-                .andExpect(jsonPath("$.data.content").value(post.getContent()));
+                .andExpect(jsonPath("$.data.content").value(post.getContent()))
+                .andExpect(jsonPath("$.data.published").value(post.isPublished()))
+                .andExpect(jsonPath("$.data.listed").value(post.isListed()));
+
 
     }
 
@@ -164,7 +172,9 @@ class ApiV1PostControllerTest {
                                 .content("""
                                         {
                                             "title" : "글1의 수정 제목",
-                                            "content": "글1의 수정 내용"
+                                            "content": "글1의 수정 내용",
+                                            "published": true,
+                                            "listed": false
                                         }
                                         """)
                                 .contentType(
@@ -184,7 +194,9 @@ class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.data.authorId").value(post.getAuthor().getId()))
                 .andExpect(jsonPath("$.data.authorName").value(post.getAuthor().getName()))
                 .andExpect(jsonPath("$.data.title").value(post.getTitle()))
-                .andExpect(jsonPath("$.data.content").value(post.getContent()));
+                .andExpect(jsonPath("$.data.content").value(post.getContent()))
+                .andExpect(jsonPath("$.data.published").value(true))
+                .andExpect(jsonPath("$.data.listed").value(false));
     }
 
     @Test
@@ -385,5 +397,35 @@ class ApiV1PostControllerTest {
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.resultCode").value("403-1"))
                 .andExpect(jsonPath("$.msg").value("비공개글은 작성자만 볼 수 있습니다."));
+    }
+
+    @Test
+    @DisplayName("다건 조회")
+    void t15() throws Exception {
+        ResultActions resultActions = mvc
+                .perform(
+                        get("/api/v1/posts")
+                )
+                .andDo(print());
+
+        resultActions
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("items"))
+                .andExpect(status().isOk());
+
+        List<Post> posts = postService.findAllByOrderByIdDesc();
+
+        for(Post post : posts) {
+            resultActions
+                    .andExpect(jsonPath("$.id").value(post.getId()))
+                    .andExpect(jsonPath("$.createDate").value(Matchers.startsWith(post.getCreateDate().toString().substring(0,25))))
+                    .andExpect(jsonPath("$.modifyDate").value(Matchers.startsWith(post.getModifyDate().toString().substring(0,25))))
+                    .andExpect(jsonPath("$.authorId").value(post.getAuthor().getId()))
+                    .andExpect(jsonPath("$.authorName").value(post.getAuthor().getName()))
+                    .andExpect(jsonPath("$.title").value(post.getTitle()))
+                    .andExpect(jsonPath("$.content").doesNotExist())
+                    .andExpect(jsonPath("$.published").value(post.isPublished()))
+                    .andExpect(jsonPath("$.listed").value(post.isListed()));
+        }
     }
 }

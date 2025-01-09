@@ -34,6 +34,8 @@ public class ApiV1PostController {
     }
 
 
+
+
     record postWriteReqBody (
             @NotBlank @Length(min = 2) String title,
             @NotBlank @Length(min = 2) String content,
