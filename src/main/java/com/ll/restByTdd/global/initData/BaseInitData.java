@@ -71,6 +71,7 @@ public class BaseInitData {
                 memberUser1,
                 "글1",
                 "글1, 내용",
+                true,
                 true
         );
         post1.addComment(memberUser2, "글1, 유저2(userId - 4), 댓글1");
@@ -80,6 +81,7 @@ public class BaseInitData {
                 memberUser1,
                 "글2",
                 "글2, 내용",
+                true,
                 true
         );
         post1.addComment(memberUser4, "글2, 유저4(userId - 6), 댓글1");
@@ -88,6 +90,7 @@ public class BaseInitData {
                 memberUser2,
                 "글3",
                 "글3, 내용",
+                true,
                 true
         );
 
@@ -95,22 +98,40 @@ public class BaseInitData {
                 memberUser3,
                 "글4",
                 "글4, 내용",
-                true);
+                true,
+                true
+        );
 
         Post post5 = postService.write(
                 memberUser4,
                 "글5",
                 "글5, 내용",
+                true,
                 true
         );
 
         Post post6 = postService.write(
                 memberUser4,
                 "글6",
-                "글6, 내용",
+                "글6, 내용, 공개x, 검색x",
+                false,
                 false
         );
 
+        Post post7 = postService.write(
+                memberUser4,
+                "글7",
+                "글7, 내용, 공개o, 검색x",
+                true,
+                false
+        );
 
+        Post post8 = postService.write(
+                memberUser4,
+                "글8",
+                "글8, 내용, 공개x, 검색O",
+                false,
+                true
+        );
     }
 }

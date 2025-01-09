@@ -22,13 +22,21 @@ public class ApiV1PostController {
 
     @GetMapping("/{id}")
     public PostDto item(@PathVariable long id) {
-        return new PostDto(postService.findById(id).get());
+        Post post = postService.findById(id).get();
+
+        if (!post.isPublished()) {
+            Member actor = rq.checkAuthentication();
+
+            post.checkActorCanRead(actor);
+        }
+
+        return new PostDto(post);
     }
 
 
     record postWriteReqBody (
             @NotBlank @Length(min = 2) String title,
-            @NotBlank @Length(min = 2) String content
+            @NotBlank @Length(min = 2) String content,
     ) {
     }
 
@@ -39,7 +47,7 @@ public class ApiV1PostController {
         Member actor = rq.checkAuthentication();
 
 
-        Post post = postService.write(actor, reqBody.title, reqBody.content, true);
+        Post post = postService.write(actor, reqBody.title, reqBody.content, true, true);
 
         return new RsData<>(
                 "201-1",
