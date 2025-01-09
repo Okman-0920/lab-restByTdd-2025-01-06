@@ -22,6 +22,23 @@ public class ApiV1PostController {
     private final PostService postService;
     private final Rq rq;
 
+    // 내글 다건 조회
+    @GetMapping("/mine")
+    public PageDto<PostDto> mine(
+            @RequestParam(defaultValue = "title") String searchKeywordType,
+            @RequestParam(defaultValue = "") String searchKeyword,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int pageSize
+    ) {
+        Member actor = rq.checkAuthentication();
+
+        return new PageDto<>(
+                postService.findByAuthorPaged(actor, searchKeywordType, searchKeyword, page, pageSize) // Page<Post>
+                        .map(PostDto::new) // 외워야함: .map해서 -> Page<PostDto>
+        );  // PageDto<PostDto>
+    }
+
+
     // 다건 조회
     @GetMapping
     public PageDto<PostDto> items(

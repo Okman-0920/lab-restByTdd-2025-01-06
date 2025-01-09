@@ -80,7 +80,7 @@ public class BaseInitData {
         Post post2 = postService.write(
                 memberUser1,
                 "글2 생성",
-                "글2, 내용",
+                "글2, 내용 작성 완료",
                 true,
                 true
         );
