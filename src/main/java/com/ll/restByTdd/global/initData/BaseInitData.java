@@ -97,7 +97,7 @@ public class BaseInitData {
         Post post4 = postService.write(
                 memberUser3,
                 "글4 생성",
-                "글4, 내용",
+                "글4, 내용 작성 완료",
                 true,
                 true
         );
@@ -105,7 +105,7 @@ public class BaseInitData {
         Post post5 = postService.write(
                 memberUser4,
                 "글5",
-                "글5, 내용",
+                "글5, 내용 작성 완료",
                 true,
                 true
         );
@@ -113,7 +113,7 @@ public class BaseInitData {
         Post post6 = postService.write(
                 memberUser4,
                 "글6",
-                "글6, 내용, 공개x, 검색x",
+                "글6, 내용 작성 완료, 공개x, 검색x",
                 false,
                 false
         );
@@ -129,7 +129,7 @@ public class BaseInitData {
         Post post8 = postService.write(
                 memberUser4,
                 "글8",
-                "글8, 내용, 공개x, 검색O",
+                "글8, 내용 작성 완료, 공개x, 검색O",
                 false,
                 true
         );
