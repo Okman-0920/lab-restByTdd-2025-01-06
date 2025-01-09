@@ -2,6 +2,7 @@ package com.ll.restByTdd.domain.post.post.controller;
 
 import com.ll.restByTdd.domain.member.member.entity.Member;
 import com.ll.restByTdd.domain.post.post.dto.PostDto;
+import com.ll.restByTdd.domain.post.post.dto.PostWithContentDto;
 import com.ll.restByTdd.domain.post.post.entity.Post;
 import com.ll.restByTdd.domain.post.post.service.PostService;
 import com.ll.restByTdd.global.rq.Rq;
@@ -12,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/posts")
@@ -33,8 +36,14 @@ public class ApiV1PostController {
         return new PostDto(post);
     }
 
+    @GetMapping
+    public List<PostDto> items() {
+        List<Post> posts = postService.findAllByOrderByIdDesc();
 
-
+        return posts.stream()
+                .map(post -> new PostDto(post))
+                .toList();
+    }
 
     record postWriteReqBody (
             @NotBlank @Length(min = 2) String title,
@@ -45,7 +54,7 @@ public class ApiV1PostController {
     }
 
     @PostMapping("/write")
-    public RsData<PostDto> writeItem(
+    public RsData<PostWithContentDto> writeItem(
             @RequestBody @Valid postWriteReqBody reqBody
     ) {
         Member actor = rq.checkAuthentication();
@@ -61,7 +70,7 @@ public class ApiV1PostController {
         return new RsData<>(
                 "201-1",
                 "%d번 글이 작성되었습니다".formatted(post.getId()),
-                new PostDto(post));
+                new PostWithContentDto(post));
     }
 
     record PostModifyReqBody (
@@ -74,7 +83,7 @@ public class ApiV1PostController {
 
     @PutMapping("/{id}")
     @Transactional
-    public RsData<PostDto> modifyItem(
+    public RsData<PostWithContentDto> modifyItem(
             @PathVariable long id,
             @RequestBody @Valid PostModifyReqBody reqBody
     ) {
@@ -91,7 +100,7 @@ public class ApiV1PostController {
         return new RsData<>(
                 "200-1",
                 "%d번 글 수정이 완료되었습니다".formatted(post.getId()),
-                new PostDto(post)
+                new PostWithContentDto(post)
         );
     }
 
