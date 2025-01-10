@@ -9,6 +9,7 @@ import com.ll.restByTdd.global.rsData.RsData;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,6 +27,7 @@ public class ApiV1MemberController {
     }
 
     @PostMapping("/join")
+    @Transactional
     public RsData<MemberDto> join(
             @RequestBody @Valid MemberJoinReqBody reqBody
     ) {
@@ -51,6 +53,7 @@ public class ApiV1MemberController {
     }
 
     @PostMapping("/login")
+    @Transactional
     public RsData<MemberLoginResBody> login(
             @RequestBody @Valid MemberLoginReqBody reqBody
     ) {
@@ -73,6 +76,7 @@ public class ApiV1MemberController {
     }
 
     @GetMapping("/me")
+    @Transactional(readOnly = true)
     public MemberDto me() {
         Member member = rq.checkAuthentication();
 

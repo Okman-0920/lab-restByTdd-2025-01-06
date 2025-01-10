@@ -24,6 +24,7 @@ public class ApiV1PostController {
 
     // 내글 다건 조회
     @GetMapping("/mine")
+    @Transactional(readOnly = true)
     public PageDto<PostDto> mine(
             @RequestParam(defaultValue = "title") String searchKeywordType,
             @RequestParam(defaultValue = "") String searchKeyword,
@@ -41,6 +42,7 @@ public class ApiV1PostController {
 
     // 다건 조회
     @GetMapping
+    @Transactional(readOnly = true)
     public PageDto<PostDto> items(
             @RequestParam(defaultValue = "title") String searchKeywordType,
             @RequestParam(defaultValue = "") String searchKeyword,
@@ -55,6 +57,7 @@ public class ApiV1PostController {
 
     // 단건 조회
     @GetMapping("/{id}")
+    @Transactional(readOnly = true)
     public PostWithContentDto item(@PathVariable long id) {
         Post post = postService.findById(id).get();
 
@@ -76,6 +79,7 @@ public class ApiV1PostController {
     }
 
     @PostMapping("/write")
+    @Transactional
     public RsData<PostWithContentDto> writeItem(
             @RequestBody @Valid postWriteReqBody reqBody
     ) {

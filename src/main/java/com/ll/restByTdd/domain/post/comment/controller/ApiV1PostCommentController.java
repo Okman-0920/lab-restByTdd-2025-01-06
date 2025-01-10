@@ -27,6 +27,7 @@ public class ApiV1PostCommentController {
     private final Rq rq;
 
     @GetMapping
+    @Transactional(readOnly = true)
     public List<PostCommentDto> items(
             @PathVariable long postId
     ) {
@@ -43,6 +44,7 @@ public class ApiV1PostCommentController {
 
     // 특정 게시글의 특정 댓글을 삭제하는 DELETE 메서드
     @DeleteMapping("/{id}") // 기본 URL에 /id 를 추가
+    @Transactional
     public RsData<Void> delete( // 인자는 게시물 id와 댓글 id를 URL에서 받는다
             @PathVariable long postId,
             @PathVariable long id
@@ -80,6 +82,7 @@ public class ApiV1PostCommentController {
 
     // 특정 게시글의 특정 댓글을 수정하는 PUT 메서드
     @PutMapping("/{id}") // 기본 URL에 /id 를 추가
+    @Transactional
     public RsData<PostCommentDto> modify(
              @PathVariable long postId,
              @PathVariable long id,
@@ -113,8 +116,8 @@ public class ApiV1PostCommentController {
     ) {
     }
 
-    // 특정 게시글의 특정 댓글을 수정하는 PUT 메서드
-    @PostMapping // 기본 URL에 /id 를 추가
+    // 댓글 작성 매서드
+    @PostMapping
     @Transactional
     public RsData<PostCommentDto> write(
             @PathVariable long postId,
