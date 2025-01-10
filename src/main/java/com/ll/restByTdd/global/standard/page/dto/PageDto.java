@@ -1,4 +1,4 @@
-package com.ll.restByTdd.standard.page.dto;
+package com.ll.restByTdd.global.standard.page.dto;
 
 import lombok.Getter;
 import org.springframework.data.domain.Page;

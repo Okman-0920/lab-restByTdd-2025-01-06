@@ -7,7 +7,7 @@ import com.ll.restByTdd.domain.post.post.entity.Post;
 import com.ll.restByTdd.domain.post.post.service.PostService;
 import com.ll.restByTdd.global.rq.Rq;
 import com.ll.restByTdd.global.rsData.RsData;
-import com.ll.restByTdd.standard.page.dto.PageDto;
+import com.ll.restByTdd.global.standard.util.page.dto.PageDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
