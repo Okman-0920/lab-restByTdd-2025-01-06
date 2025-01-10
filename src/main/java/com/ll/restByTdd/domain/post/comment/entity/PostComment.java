@@ -29,6 +29,7 @@ public class PostComment extends BaseTime {
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    // content 값을 받아 this에 저장하는 set 메서드
     public void modify(String content) {
         this.content = content;
     }

@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public class BaseTime extends BaseEntity {
 
-
     @CreatedDate
     @Setter(AccessLevel.PRIVATE)
     private LocalDateTime createDate;

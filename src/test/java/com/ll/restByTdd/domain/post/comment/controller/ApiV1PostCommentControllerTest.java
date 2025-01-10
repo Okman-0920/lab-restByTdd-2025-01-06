@@ -11,16 +11,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -68,26 +69,101 @@ public class ApiV1PostCommentControllerTest {
     @Test
     @DisplayName("댓글 삭제")
     void t2() throws Exception {
-        Member actor = memberService.findByUsername("user1").get();
+        Member actor = memberService.findByUsername("user2").get();
 
         Post post = postService.findById(1).get();
+
+        PostComment postComment = post.getCommentById(1).get();
 
         ResultActions resultActions = mvc
                 .perform(
                         delete("/api/v1/posts/1/comments/1")
-                                .header("Authorization", "Bearer " + actor.getId())
+                                .header("Authorization", "Bearer " + actor.getApiKey())
                 )
                 .andDo(print());
 
-        assertThat(post.getComments().isEmpty());
+        resultActions
+                .andExpect(handler().handlerType(ApiV1PostCommentController.class))
+                .andExpect(handler().methodName("delete"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").value("200-1"))
+                .andExpect(jsonPath("$.msg").value("%d번 댓글이 삭제되었습니다.".formatted(postComment.getId())));
+
+        assertThat(post.getCommentById(1).isEmpty());
+    }
+
+    @Test
+    @DisplayName("댓글 수정")
+    void t3() throws Exception {
+        Member actor = memberService.findByUsername("user2").get();
+
+        Post post = postService.findById(1).get();
+
+        PostComment postComment = post.getCommentById(1).get();
+
+        ResultActions resultActions = mvc
+                .perform(
+                        put("/api/v1/posts/1/comments/1")
+                                .header("Authorization", "Bearer " + actor.getApiKey())
+                                .content("""
+                                        {
+                                            "content": "modify 댓글"
+                                        }
+                                        """)
+                                .contentType(
+                                        new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8)
+                                )
+                )
+                .andDo(print());
 
         resultActions
                 .andExpect(handler().handlerType(ApiV1PostCommentController.class))
-                .andExpect(handler().methodName("deleteItem"))
+                .andExpect(handler().methodName("modify"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.resultCode").value("201-1"))
-                .andExpect(jsonPath("$.msg").value("%d번 댓글이 삭제되었습니다".formatted(post.getId()))
-                );
+                .andExpect(jsonPath("$.resultCode").value("200-1"))
+                .andExpect(jsonPath("$.msg").value("%d번 댓글이 수정되었습니다.".formatted(postComment.getId())))
+                .andExpect(jsonPath("$.data.id").value(postComment.getId()))
+                .andExpect(jsonPath("$.data.createDate").value(Matchers.startsWith(postComment.getCreateDate().toString().substring(0,25))))
+                .andExpect(jsonPath("$.data.modifyDate").value(Matchers.startsWith(postComment.getModifyDate().toString().substring(0,25))))
+                .andExpect(jsonPath("$.data.authorId").value(postComment.getAuthor().getId()))
+                .andExpect(jsonPath("$.data.authorName").value(postComment.getAuthor().getName()))
+                .andExpect(jsonPath("$.data.content").value("modify 댓글"));
+    }
 
+    @Test
+    @DisplayName("댓글 작성")
+    void t4() throws Exception {
+        Member actor = memberService.findByUsername("user2").get();
+
+        ResultActions resultActions = mvc
+                .perform(
+                        post("/api/v1/posts/1/comments")
+                                .header("Authorization", "Bearer " + actor.getApiKey())
+                                .content("""
+                                        {
+                                            "content": "new write 댓글"
+                                        }
+                                        """)
+                                .contentType(
+                                        new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8)
+                                )
+                )
+                .andDo(print());
+
+        Post post = postService.findById(1).get();
+        PostComment lastPostComment = post.getComments().getLast();
+
+        resultActions
+                .andExpect(handler().handlerType(ApiV1PostCommentController.class))
+                .andExpect(handler().methodName("write"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").value("200-1"))
+                .andExpect(jsonPath("$.msg").value("댓글이 작성되었습니다."))
+                .andExpect(jsonPath("$.data.id").value(lastPostComment.getId()))
+                .andExpect(jsonPath("$.data.createDate").value(Matchers.startsWith(lastPostComment.getCreateDate().toString().substring(0,25))))
+                .andExpect(jsonPath("$.data.modifyDate").value(Matchers.startsWith(lastPostComment.getModifyDate().toString().substring(0,25))))
+                .andExpect(jsonPath("$.data.authorId").value(lastPostComment.getAuthor().getId()))
+                .andExpect(jsonPath("$.data.authorName").value(lastPostComment.getAuthor().getName()))
+                .andExpect(jsonPath("$.data.content").value("new write 댓글"));
     }
 }
