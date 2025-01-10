@@ -1,10 +1,10 @@
 package com.ll.restByTdd.domain.post.comment.controller;
 
 import com.ll.restByTdd.domain.member.member.entity.Member;
-import com.ll.restByTdd.domain.member.member.service.MemberService;
 import com.ll.restByTdd.domain.post.comment.dto.PostCommentDto;
 import com.ll.restByTdd.domain.post.comment.entity.PostComment;
 import com.ll.restByTdd.domain.post.post.entity.Post;
+import com.ll.restByTdd.domain.post.post.repository.PostRepository;
 import com.ll.restByTdd.domain.post.post.service.PostService;
 import com.ll.restByTdd.global.exceptions.ServiceException;
 import com.ll.restByTdd.global.rq.Rq;
@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ApiV1PostCommentController {
     private final PostService postService;
-    private final MemberService memberService;
+    private final PostRepository postRepository;
     private final Rq rq;
 
     @GetMapping
@@ -82,7 +82,6 @@ public class ApiV1PostCommentController {
 
     // 특정 게시글의 특정 댓글을 수정하는 PUT 메서드
     @PutMapping("/{id}") // 기본 URL에 /id 를 추가
-    @Transactional
     public RsData<PostCommentDto> modify(
              @PathVariable long postId,
              @PathVariable long id,
@@ -100,10 +99,10 @@ public class ApiV1PostCommentController {
 
         postComment.checkActorCanModify(actor);
 
-        // 권한이 확인되었다면 삭제
         postComment.modify(reqBody.content);
 
-        // 삭제한 후 아래 리턴값을 반환 Void 형 이기 때문에 별도 null을 표기하지 않아도 됨.
+        postRepository.save(post);
+
         return new RsData<>(
                 "200-1",
                 "%d번 댓글이 수정되었습니다.".formatted(id),
