@@ -33,6 +33,7 @@ public class PostComment extends BaseTime {
         this.content = content;
     }
 
+    // 해당 댓글을 수정할 수 있는지에 대한 확인
     public void checkActorCanModify(Member actor) {
         if(actor == null) throw new ServiceException("401-1", "로그인 후 이용해주세요");
 
@@ -41,6 +42,7 @@ public class PostComment extends BaseTime {
         throw new ServiceException("403-2", "작성자만 댓글을 수정할 수 있습니다.");
     }
 
+    // 해당 댓글을 삭제할 수 있는지에 대한 확인
     public void checkActorCanDelete(Member actor) {
         if(actor == null) throw new ServiceException("401-1", "로그인 후 이용해주세요");
 
